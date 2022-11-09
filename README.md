@@ -61,11 +61,16 @@ Add the federated identity credential
 ```bash
 az identity federated-credential create --name "terraform-github" --identity-name "terraform" \
   --issuer 'https://token.actions.githubusercontent.com/'\
-  --subject "repo:$gitHubUser/$gitHubRepo:environment:Testing"\
+  --subject "repo:$gitHubUser/$gitHubRepo:refs/heads/main"\
   --audiences 'api://AzureADTokenExchange'
 ```
 
-> Subject could be repo:$gitHubUser/$gitHubRepo:ref:refs/heads/main" if not using environments
+Permitted subjects for GitHub
+
+* `repo:$gitHubUser/$gitHubRepo:environment:my-env`
+* `repo:$gitHubUser/$gitHubRepo:ref:refs/heads/my-branch`
+* `repo:$gitHubUser/$gitHubRepo:ref:refs/tags/my-tag`
+* `repo:$gitHubUser/$gitHubRepo:pull-request`
 
 ## Storage Account
 
@@ -83,8 +88,41 @@ az storage container create --name tfstate2 --account-name terraform$uniq --auth
 
 ```bash
 storageId=$(az storage account show --name "terraform$uniq" --query id --output tsv)
-
 ```
+
+## Create a Terraform Backend file
+
+```bash
+cat <<EOT > terraform/backend.tf
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "terraform"
+    storage_account_name = "terraform$uniq"
+    container_name       = "tfstate"
+    key                  = "$gitHubRepo"
+  }
+}
+EOT
+```
+
+Example backend.tf file:
+
+```hcl
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "terraform"
+    storage_account_name = "terraform66615a0f"
+    container_name       = "tfstate"
+    key                  = "federated_managed_identity"
+  }
+}
+```
+
+
+
+
+
+
 
 az rest --method POST --uri 'https://graph.microsoft.com/applications/f6475511-fd81-4965-a00e-41e7792b7b9c/federatedIdentityCredentials' --body '{"name":"Testing","issuer":"https://token.actions.githubusercontent.com/","subject":"repo:octo-org/octo-repo:environment:Production","description":"Testing","audiences":["api://AzureADTokenExchange"]}'
 
