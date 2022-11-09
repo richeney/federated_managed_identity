@@ -56,21 +56,32 @@ az identity create --name "terraform"
 identityId=$(az identity show --name "terraform" --query id --output tsv)
 ```
 
+Assign the Contributor role at the subscription scope
+
+```bash
+az role assignment create \
+  --assignee "$(az identity show --name "terraform" --query principalId --output tsv)" \
+  --role "Contributor" \
+  --scope "/subscriptions/$(az account show --query id --output tsv)"
+```
+
 Add the federated identity credential
 
 ```bash
 az identity federated-credential create --name "terraform-github" --identity-name "terraform" \
-  --issuer 'https://token.actions.githubusercontent.com/'\
-  --subject "repo:$gitHubUser/$gitHubRepo:refs/heads/main"\
+  --issuer 'https://token.actions.githubusercontent.com'\
+  --subject "repo:$gitHubUser/$gitHubRepo:ref:refs/heads/main"\
   --audiences 'api://AzureADTokenExchange'
 ```
 
-Permitted subjects for GitHub
+Permitted subject claims for GitHub
 
 * `repo:$gitHubUser/$gitHubRepo:environment:my-env`
 * `repo:$gitHubUser/$gitHubRepo:ref:refs/heads/my-branch`
 * `repo:$gitHubUser/$gitHubRepo:ref:refs/tags/my-tag`
 * `repo:$gitHubUser/$gitHubRepo:pull-request`
+
+<https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#example-subject-claims>
 
 ## Storage Account
 
