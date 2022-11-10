@@ -154,6 +154,9 @@ terraform {
 gh secret set AZURE_CLIENT_ID --body $(az identity show --name "terraform" --query clientId --output tsv)
 gh secret set AZURE_SUBSCRIPTION_ID --body $(az account show --query id --output tsv)
 gh secret set AZURE_TENANT_ID --body $(az identity show --name "terraform" --query tenantId --output tsv)
+gh secret set ARM_BACKEND_RESOURCEGROUP --body $(az config get --local defaults.group --query value --output tsv --only-show-errors)
+gh secret set ARM_BACKEND_STORAGEACCOUNT --body "terraform$hash"
+
 ```
 
 
