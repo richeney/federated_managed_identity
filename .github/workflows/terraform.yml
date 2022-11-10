@@ -6,7 +6,7 @@
 # When running Terraform in GitHub Actions, the provider will detect the ACTIONS_ID_TOKEN_REQUEST_URL
 # and ACTIONS_ID_TOKEN_REQUEST_TOKEN environment variables set by the GitHub Actions runtime.
 
-name: 'Terraform'
+name: 'Deploy Terraform to Azure using OpenID Connect'
 
 on:
   push:

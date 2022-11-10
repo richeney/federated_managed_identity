@@ -12,7 +12,7 @@ resource "azurerm_container_group" "example" {
   location            = azurerm_resource_group.basics.location
   resource_group_name = azurerm_resource_group.basics.name
   ip_address_type     = "Public"
-  dns_name_label      = "${var.container_group_name}-${local.uniq}"
+  dns_name_label      = replace("${var.container_group_name}-${local.uniq}", "_", "-")
   os_type             = "Linux"
 
   container {
