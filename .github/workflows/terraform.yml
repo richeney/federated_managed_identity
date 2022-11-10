@@ -21,7 +21,7 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-    environment: production
+    # environment: production
     env:
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -38,17 +38,25 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    # Check on the HCL formatting
-    - name: Terraform fmt
-      id: fmt
-      run: terraform fmt -check
-      continue-on-error: true
-
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.3.4
+
+    # Show some basic info
+    - name: Terraform version
+      id: version
+      run: |
+        type -p terraform
+        terraform version
+      continue-on-error: true
+
+    # Check on the HCL formatting
+    - name: Terraform fmt
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
