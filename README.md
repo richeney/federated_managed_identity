@@ -159,54 +159,7 @@ gh secret set ARM_BACKEND_STORAGEACCOUNT --body "terraform$hash"
 
 ```
 
-
-
-az rest --method POST --uri 'https://graph.microsoft.com/applications/f6475511-fd81-4965-a00e-41e7792b7b9c/federatedIdentityCredentials' --body '{"name":"Testing","issuer":"https://token.actions.githubusercontent.com/","subject":"repo:octo-org/octo-repo:environment:Production","description":"Testing","audiences":["api://AzureADTokenExchange"]}'
-
-{
-  "@odata.context": "https://graph.microsoft.com/$metadata#applications('f6475511-fd81-4965-a00e-41e7792b7b9c')/federatedIdentityCredentials/$entity",
-  "audiences": [
-    "api://AzureADTokenExchange"
-  ],
-  "description": "Testing",
-  "id": "1aa3e6a7-464c-4cd2-88d3-90db98132755",
-  "issuer": "https://token.actions.githubusercontent.com/",
-  "name": "Testing",
-  "subject": "repo:octo-org/octo-repo:environment:Production"
-}
-
-name: The name of your Azure application.
-
-issuer: The path to the GitHub OIDC provider: https://token.actions.githubusercontent.com/. This issuer will become trusted by your Azure application.
-
-subject: Before Azure will grant an access token, the request must match the conditions defined here.
-
-For Jobs tied to an environment: repo:< Organization/Repository >:environment:< Name >
-
-For Jobs not tied to an environment, include the ref path for branch/tag based on the ref path used for triggering the workflow: repo:< Organization/Repository >:ref:< ref path>. For example, repo:n-username/ node_express:ref:refs/heads/my-branch or repo:n-username/ node_express:ref:refs/tags/my-tag.
-
-For workflows triggered by a pull request event: repo:< Organization/Repository >:pull-request.
-audiences lists the audiences that can appear in the external token. This field is mandatory. The recommended value is "api://AzureADTokenExchange".
-
-
-
-audience `api://AzureADTokenExchange`
-
-
-##
-
-
-## Remote State
-
-
-
-## User-Assigned Managed Identity
-
-
-
 ## References
-
-
 
 Info on workload identity federation - includes managed applications aswell as service principals - <https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation>
 
@@ -216,45 +169,10 @@ And THIS IS THE ONE for managed identity - <https://learn.microsoft.com/en-us/az
 
 Needs Contributor or [Managed Identity Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#managed-identity-contributor)
 
-Contributor
-    {
-      "actions": [
-        "*"
-      ],
-      "notActions": [
-        "Microsoft.Authorization/*/Delete",
-        "Microsoft.Authorization/*/Write",
-        "Microsoft.Authorization/elevateAccess/Action",
-        "Microsoft.Blueprint/blueprintAssignments/write",
-        "Microsoft.Blueprint/blueprintAssignments/delete",
-        "Microsoft.Compute/galleries/share/action"
-      ],
-      "dataActions": [],
-      "notDataActions": []
-    }
+Others:
 
-Managed Identity Contributor
-    {
-      "actions": [
-        "Microsoft.ManagedIdentity/userAssignedIdentities/read",
-        "Microsoft.ManagedIdentity/userAssignedIdentities/write",
-        "Microsoft.ManagedIdentity/userAssignedIdentities/delete",
-        "Microsoft.Authorization/*/read",
-        "Microsoft.Insights/alertRules/*",
-        "Microsoft.Resources/subscriptions/resourceGroups/read",
-        "Microsoft.Resources/deployments/*",
-        "Microsoft.Support/*"
-      ],
-      "notActions": [],
-      "dataActions": [],
-      "notDataActions": []
-    }
-
-Official GitHub to Azure is just OpenId on appId and also Service Principal - <https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure>
-
-Limitations - <https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-considerations>
-
-
-* [Permit IPs for GitHub Actions](https://stackoverflow.com/questions/68070211/which-ips-to-allow-in-azure-for-github-actions)
+* Official GitHub to Azure is just OpenId on appId and also Service Principal - <https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure>
+* Limitations - <https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-considerations>
+* [Permit IPs for GitHub Actions](https://stackoverflow.com/questions/68070211/which-ips-to-allow-in-azure-for-github-actions) - to be added
 * <https://github.com/hashicorp/setup-terraform>
 * <https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_oidc>
