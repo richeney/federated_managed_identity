@@ -85,30 +85,44 @@ Permitted subject claims for GitHub
 
 ## Storage Account
 
-Generate a 8 character hash
+Generate a predictable 8 character hash from the resource group's resource ID. This will be used to help the stporage account FQDN to be globally unique.
 
 ```bash
 groupid=$(az group show --name terraform --query id --output tsv)
-uniq=$(echo "$groupid" | sha256sum | cut -c1-8)
+hash=$(echo "$groupid" | sha256sum | cut -c1-8)
 ```
 
 ```bash
-az storage account create --name "terraform$uniq" --identity-type UserAssigned --user-identity-id $identityId --sku Standard_RAGZRS --min-tls-version TLS1_2 --allow-blob-public-access false
-az storage container create --name tfstate2 --account-name terraform$uniq --auth-mode login
+az storage account create --name "terraform$hash" \
+  --identity-type UserAssigned --user-identity-id $identityId \
+  --sku Standard_RAGZRS \
+  --min-tls-version TLS1_2 --allow-blob-public-access false
 ```
 
 ```bash
-storageId=$(az storage account show --name "terraform$uniq" --query id --output tsv)
+az storage container create --name tfstate \
+  --account-name terraform$hash --auth-mode login
+```
+
+```bash
+storageId=$(az storage account show --name "terraform$hash" --query id --output tsv)
 ```
 
 ## Create a Terraform Backend file
+
+This is (close to) the format for the [provider for service principals with OIDC](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_oidc) and the [backend when authenticating using OIDC](https://developer.hashicorp.com/terraform/language/settings/backends/azurerm):
 
 ```bash
 cat <<EOT > terraform/backend.tf
 terraform {
   backend "azurerm" {
+    use_oidc             = true
+
+    tenant_id            = "$(az account show --query tenantId --output tsv)"
+    subscription_id      = "$(az account show --query id --output tsv)"
     resource_group_name  = "terraform"
-    storage_account_name = "terraform$uniq"
+
+    storage_account_name = "terraform$hash"
     container_name       = "tfstate"
     key                  = "$gitHubRepo"
   }
@@ -121,7 +135,12 @@ Example backend.tf file:
 ```hcl
 terraform {
   backend "azurerm" {
+    use_oidc             = true
+
+    tenant_id            = "3c584bbd-915f-4c70-9f2e-7217983f22f6"
+    subscription_id      = "9b7a166a-267f-45a5-b480-7a04cfc1edf6"
     resource_group_name  = "terraform"
+
     storage_account_name = "terraform66615a0f"
     container_name       = "tfstate"
     key                  = "federated_managed_identity"
@@ -129,9 +148,13 @@ terraform {
 }
 ```
 
+## Create the GitHub secrets
 
-
-
+```bash
+gh secret set AZURE_CLIENT_ID --body $(az identity show --name "terraform" --query clientId --output tsv)
+gh secret set AZURE_SUBSCRIPTION_ID --body $(az account show --query id --output tsv)
+gh secret set AZURE_TENANT_ID --body $(az identity show --name "terraform" --query tenantId --output tsv)
+```
 
 
 
@@ -228,6 +251,7 @@ Official GitHub to Azure is just OpenId on appId and also Service Principal - <h
 
 Limitations - <https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-considerations>
 
-* [Passwordless Github Actions with Azure Workload Identity OIDC](https://www.youtube.com/watch?v=7iCtY0ztYY4) - Houssem Dellai
 
 * [Permit IPs for GitHub Actions](https://stackoverflow.com/questions/68070211/which-ips-to-allow-in-azure-for-github-actions)
+* <https://github.com/hashicorp/setup-terraform>
+* <https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_oidc>
