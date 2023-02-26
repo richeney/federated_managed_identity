@@ -85,7 +85,7 @@ Permitted subject claims for GitHub
 
 ## Storage Account
 
-Generate a predictable 8 character hash from the resource group's resource ID. This will be used to help the stporage account FQDN to be globally unique.
+Generate a predictable 8 character hash from the resource group's resource ID. This will be used to help the storage account FQDN to be globally unique.
 
 ```bash
 groupid=$(az group show --name terraform --query id --output tsv)
@@ -161,7 +161,7 @@ gh secret set ARM_BACKEND_STORAGEACCOUNT --body "terraform$hash"
 
 ## References
 
-Info on workload identity federation - includes managed applications aswell as service principals - <https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation>
+Info on workload identity federation - includes managed applications as well as service principals - <https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation>
 
 This is the page for appIds - <https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-create-trust>
 

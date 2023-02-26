@@ -1,5 +1,11 @@
 name: Run Azure Login with OpenID Connect
-on: [push]
+on:
+  workflow_dispatch:
+    inputs:
+      format:
+        description: '--output value for Azure CLI commands'
+        required: true
+        default: 'jsonc'
 
 permissions:
       id-token: write
@@ -18,6 +24,6 @@ jobs:
 
     - name: 'Run Azure CLI commands'
       run: |
-          az account show
-          az group list
+          az account show --output jsonc
+          az group list --output ${{ github.event.inputs.format }}
           pwd
