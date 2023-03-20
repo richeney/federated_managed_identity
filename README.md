@@ -161,18 +161,18 @@ gh secret set ARM_BACKEND_STORAGEACCOUNT --body "terraform$hash"
 
 ## References
 
-Info on workload identity federation - includes managed applications as well as service principals - <https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation>
+Info on workload identity federation - includes managed applications as well as service principals - <https://learn.microsoft.com/azure/active-directory/develop/workload-identity-federation>
 
-This is the page for appIds - <https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-create-trust>
+This is the page for appIds - <https://learn.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust>
 
-And THIS IS THE ONE for managed identity - <https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-create-trust-user-assigned-managed-identity>
+And THIS IS THE ONE for managed identity - <https://learn.microsoft.com/azure/active-directory/develop/workload-identity-federation-create-trust-user-assigned-managed-identity>
 
-Needs Contributor or [Managed Identity Contributor](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#managed-identity-contributor)
+Needs Contributor or [Managed Identity Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#managed-identity-contributor)
 
 Others:
 
-* Official GitHub to Azure is just OpenId on appId and also Service Principal - <https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure>
-* Limitations - <https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation-considerations>
+* Official GitHub to Azure is just OpenId on appId and also Service Principal - <https://learn.microsoft.com/azure/developer/github/connect-from-azure>
+* Limitations - <https://learn.microsoft.com/azure/active-directory/develop/workload-identity-federation-considerations>
 * [Permit IPs for GitHub Actions](https://stackoverflow.com/questions/68070211/which-ips-to-allow-in-azure-for-github-actions) - to be added
 * <https://github.com/hashicorp/setup-terraform>
 * <https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_oidc>
