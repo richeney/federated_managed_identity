@@ -80,6 +80,7 @@ Permitted subject claims for GitHub
 * `repo:$gitHubUser/$gitHubRepo:ref:refs/heads/my-branch`
 * `repo:$gitHubUser/$gitHubRepo:ref:refs/tags/my-tag`
 * `repo:$gitHubUser/$gitHubRepo:pull-request`
+* `$environment:job_workflow_ref:$organisation/$gitHubRepo/.github/workflows/$workflow.yaml@refs/heads/main`
 
 <https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#example-subject-claims>
 
